@@ -1,0 +1,58 @@
+﻿<!doctype html>
+<html>
+<head>
+    <title></title>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body style="margin: 15px" >
+    <h1 class="row justify-content-center">Welcome, {{user.first_name}}</h1>
+    <nav class="navbar navbar-expand-lg ">
+        <a class="nav-link" href="/logOut">Log out</a>
+        <a class="nav-link" href="/books">Home</a>
+    </nav>
+    
+
+    <div class="row justify-content-around">
+        <div id="form">
+        <form action="/books/add" method="post">
+            <h1>Add a Favorite Book</h1>
+            {% csrf_token %}
+            <label>Title</label>
+            <input type="text" name="book_title" class="form-control" placeholder="Enter Title"/> <br />
+            <label>Description</label>
+            <textarea name="book_desc" class="form-control" placeholder="Enter Description"></textarea>
+            <button style="margin-top: 5px" type="submit" class="btn btn-secondary">Add</button>
+        </form>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li style="list-style-type:none"  {% if message.tags %} class="{{ message.tags }}" {% endif %}><div style="width: 100%" class="alert alert-danger" role="alert">{{ message }}</div></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+        <div id="allBooks" class="list-group">
+        {% for book in books %}
+            <div class="book; list-group-item">
+                <a href="/book/{{book.id}}">{{book.title}}</a>
+                <p>(added by {{book.upload_by.first_name}} {{book.upload_by.last_name}})</p>
+                {% if user in book.users_who_like.all %}
+                    <p>This in one of your favorites</p>
+                {% else %}
+                    <a href="/addFavorite/{{book.id}}">Add to Favorite</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
