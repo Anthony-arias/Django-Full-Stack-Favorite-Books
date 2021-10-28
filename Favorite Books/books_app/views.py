@@ -62,6 +62,9 @@ def logOut(request):
     return redirect('/')
 
 def decideWhatToShow(request, book_id):
+    if 'userid' not in request.session:
+        return redirect('/')
+
     this_book = Book.objects.get(id=book_id)
     this_user = User.objects.get(id=request.session['userid'])
     context = {
@@ -75,6 +78,9 @@ def decideWhatToShow(request, book_id):
         return render(request, "show-book.html", context)
 
 def addBook(request):
+    if 'userid' not in request.session:
+        return redirect('/')
+
     errors = Book.objects.basic_validator(request.POST)
     if len(errors) > 0:
         for key, value in errors.items():
@@ -87,18 +93,27 @@ def addBook(request):
     return redirect("/books")
 
 def removeFavorite(request, book_id):
+    if 'userid' not in request.session:
+        return redirect('/')
+
     this_book = Book.objects.get(id=book_id)
     this_user = User.objects.get(id=request.session['userid'])
     this_user.like_books.remove(this_book)
     return redirect("/book/"+str(book_id))
 
 def addFavorite(request, book_id):
+    if 'userid' not in request.session:
+        return redirect('/')
+
     this_book = Book.objects.get(id=book_id)
     this_user = User.objects.get(id=request.session['userid'])
     this_user.like_books.add(this_book)
     return redirect("/books")
 
 def editBook(request, book_id):
+    if 'userid' not in request.session:
+        return redirect('/')
+
     this_book = Book.objects.get(id=book_id)
     if request.POST['button'] == "add":
         this_book.title = request.POST['book_title']
